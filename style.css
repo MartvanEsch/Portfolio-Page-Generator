@@ -20,6 +20,10 @@ body {
       width: 2vw;
       height: 2vw;
     }
+
+    > input[type="text"] {
+      width: 8vw;
+    }
   }
 
   div:hover {
@@ -46,6 +50,11 @@ body {
     border-bottom: 1px rgb(10, 10, 10) solid;
     font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
     padding: 9px;
+  }
+
+  p {
+    max-width: max-content;
+    overflow-wrap: break-word;
   }
 }
 
