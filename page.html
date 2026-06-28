@@ -3,37 +3,87 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>Portfolio Page Builder</title>
 
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="styles.css" />
     <script src="script.js" defer></script>
   </head>
   <body>
-    <div id="toolbar">
-      <div>
-        <input class="createBtn" value="h1" data-type="h1" type="button" />
-        <input class="createBtn" value="h2" data-type="h2" type="button" />
-        <input class="createBtn" value="h3" data-type="h3" type="button" />
-        <input class="createBtn" value="p" data-type="p" type="button" />
-        <input class="createBtn" value="img" data-type="img" type="button" />
-      </div>
+    <main>
+      <aside>
+        <h1>Page builder</h1>
+        <section>
+          <h3>1.</h3>
+          <h2>Settings</h2>
+          <input
+            id="nameInput"
+            type="text"
+            placeholder="Name"
+            data-prop="name"
+          />
+          <select id="categoryInput" data-prop="category">
+            <option value="branding">Branding</option>
+            <option value="creative_projects">Creative Projects</option>
+            <option value="misc">Misc</option>
+            <option value="print_&_posters">Print & Posters</option>
+          </select>
+          <div>
+            <label>New</label>
+            <input id="newInput" type="checkbox" data-prop="new" />
+          </div>
+        </section>
 
-      <div>
-        <a id="previewLink" href="project.html">Preview project</a>
-        <select name="cats" id="cats">
-          <option value="branding">branding</option>
-          <option value="creative_projects">creative_projects</option>
-          <option value="misc">misc</option>
-          <option value="print_&_posters">print_&_posters</option>
-        </select>
-        <label>Project Name</label>
-        <input id="name" type="text" />
-      </div>
-    </div>
-    <div id="preview"></div>
-    <div id="inputs">
-      <div id="text"><label>Text</label> <input type="text" /></div>
-      <div id="settings"><label>Path</label> <input type="text" /></div>
-    </div>
+        <section>
+          <h3>2.</h3>
+          <h2>Elements</h2>
+          <div>
+            <div>
+              <input class="addInput" type="button" value="Header" />
+              <input class="addInput" type="button" value="Subheader" />
+              <input class="addInput" type="button" value="Paragraph" />
+              <input class="addInput" type="button" value="Caption" />
+            </div>
+            <div>
+              <input class="addInput" type="button" value="Image" />
+              <input class="addInput" type="button" value="Video" />
+              <input class="addInput" type="button" value="Link" />
+            </div>
+          </div>
+
+          <div id="properties" class="hidden">
+            <h4>Properties</h4>
+            <div>
+              <input type="text" placeholder="Text" />
+              <input type="text" placeholder="Path" />
+              <input type="text" placeholder="Alt" />
+              <input type="text" placeholder="Embed" />
+              <input type="text" placeholder="Url" />
+            </div>
+
+            <input id="addElInput" type="button" value="Add" />
+          </div>
+        </section>
+
+        <section>
+          <h3>3.</h3>
+          <h2>Export</h2>
+          <p></p>
+          <input type="button" value="Page" />
+          <input type="button" value="Javascript Object" />
+          <input type="button" value="Save to cache" />
+        </section>
+
+        <section>
+          <h2>Load</h2>
+          <textarea id="" name="" rows="5" cols="33"></textarea>
+          <input type="button" value="Load" />
+        </section>
+      </aside>
+
+      <section id="preview">
+        <pre id="json-output"></pre>
+        <div></div>
+      </section>
+    </main>
   </body>
 </html>

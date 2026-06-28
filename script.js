@@ -1,86 +1,165 @@
-let inputs = document.querySelector("#inputs");
-let textInput = inputs.querySelector("#text input");
-let pathInput = inputs.querySelector("#settings input")
-let createBtns = document.querySelectorAll(".createBtn");
-let preset = {
-  elements: [],
-  new: true,
-  category: "",
+let pageObject = {
   name: "",
+  elements: [],
+  category: "branding",
+  new: false,
 };
-let current;
 
-// Handle clicks
-document.addEventListener("click", (e) => {
-  let btn = e.target;
-  handleButton(btn);
-});
+function init() {
+  let type = "";
 
-// Handle keypresses
-document.addEventListener("keypress", (e) => {
-  // Button selecting
-  if (
-    e.code.includes("Digit") &&
-    e.code.slice(5, 6) <= createBtns.length &&
-    !inputs.classList.contains("show")
-  ) {
-    e.preventDefault();
-    handleButton(createBtns[e.code.slice(5, 6) - 1]);
-  }
+  const inputs = document.querySelectorAll("[data-prop]");
+  const addInputs = document.querySelectorAll(".addInput");
+  const addElInput = document.querySelector("#addElInput");
+  console.log(addElInput);
 
-  // Add text to elements
-  if (e.code === "Enter" && inputs.classList.contains("show")) {
-    inputs.classList.remove("show");
+  inputs.forEach((input) => {
+    input.addEventListener("input", (e) => {
+      let property = e.target.dataset.prop;
+      let value =
+        e.target.type === "checkbox" ? e.target.checked : e.target.value;
+      updateObject(property, value);
+    });
+  });
 
-    preset.elements.push({ type: current, content: textInput.value, path: pathInput.value });
+  addInputs.forEach((input) => {
+    input.addEventListener("click", (e) => {
+      let value = e.target.value;
+      type = value;
+      setupInputFields(value);
+    });
+  });
 
-    renderPreview();
-  }
-});
+  addElInput.addEventListener("click", () => {
+    addElement(type);
+  });
 
-// Handle button activating
-function handleButton(btn) {
-  if (!btn.classList.contains("createBtn")) {
-    return;
-  }
-
-  current = btn.dataset.type;
-  inputs.classList.add("show");
-  textInput.value = "";
-  textInput.focus();
+  updateObjPreview();
 }
 
-let nameInput = document.querySelector("#name");
-nameInput.addEventListener("change", () => {
-  preset.name = nameInput.value;
-  renderPreview()
-});
-let catsInput = document.querySelector("#cats")
-catsInput.addEventListener("change", (e) => {
-  preset.category = e.target.value
-  renderPreview()
-})
+function setupInputFields(elementValue) {
+  const addInputsProperties = {
+    Header: ["Text"],
+    Subheader: ["Text"],
+    Paragraph: ["Text"],
+    Caption: ["Text"],
+    Image: ["Path", "Alt"],
+    Video: ["Embed"],
+    Link: ["Url"],
+  };
 
-// Render preview html
-let previewButton = document.querySelector("#previewLink");
-let preview = document.querySelector("#preview");
+  const properties = document.querySelector("#properties");
+  const propertiesInputs = properties.querySelectorAll(`input[type="text"]`);
+  const inputsNeeded = addInputsProperties[elementValue];
+
+  propertiesInputs.forEach((el) => {
+    if (!inputsNeeded.includes(el.placeholder)) {
+      el.classList.add("hidden");
+    } else {
+      el.classList.remove("hidden");
+    }
+  });
+
+  properties.classList.remove("hidden");
+}
+
+function updateObject(property, value) {
+  pageObject[property] = value;
+  console.log(pageObject);
+  updateObjPreview();
+  renderPreview();
+}
+
+function updateObjPreview() {
+  const preview = document.querySelector("#preview");
+  // We zoeken nu naar ons pre-element
+  let pre = preview.querySelector("#json-output");
+
+  if (pre) {
+    // De 'null' is voor een optionele filter-functie (niet nodig nu)
+    // De '2' zorgt voor de mooie VS Code-achtige inspringing met 2 spaties
+    pre.textContent = JSON.stringify(pageObject, null, 2);
+  }
+}
+function addElement(type) {
+  console.log("adding input");
+
+  const propertieInputs = Array.from(
+    document
+      .querySelector(`#properties`)
+      .querySelectorAll(`input[type="text"]`),
+  );
+
+  let contentObj = {};
+
+  propertieInputs
+    .filter((el) => !el.classList.contains("hidden"))
+    .forEach((el) => {
+      const key = el.placeholder.toLowerCase();
+      contentObj[key] = el.value;
+    });
+
+  console.log(contentObj);
+
+  let elements = pageObject.elements;
+
+  elements.push(new Element(type, contentObj));
+
+  updateObject("elements", elements);
+}
+
 function renderPreview() {
+  console.log("rendering preview");
+
+  const preview = document.querySelector("#preview div");
+
   preview.innerHTML = "";
-  let div = document.createElement("div");
-  let p = document.createElement("p");
-  p.innerHTML = JSON.stringify(preset);
-  div.append(p);
 
-  for (let i = 0; i < preset.elements.length; i++) {
-    let element = preset.elements[i];
-    let el = document.createElement(element.type);
-    el.textContent = element.content;
-    div.append(el);
-  }
+  pageObject.elements.forEach((el) => {
+    if (el.type === "Header") {
+      let h1 = document.createElement("h1");
+      h1.textContent = el.text;
+      preview.append(h1);
+    }
 
-  const presetTekst = JSON.stringify(preset);
-  previewButton.href = "project.html#" + encodeURIComponent(presetTekst);
-  preview.append(div);
+    if (el.type === "Subheader") {
+      let h2 = document.createElement("h2");
+      h2.textContent = el.text;
+      preview.append(h2);
+    }
+
+    if (el.type === "Paragraph") {
+      let p = document.createElement("p");
+      p.textContent = el.text;
+      preview.append(p);
+    }
+
+    if (el.type === "Image") {
+      let img = document.createElement("img");
+      img.src = "Placeholder.png";
+      preview.append(img);
+    }
+
+    if (el.type === "Video") {
+      let img = document.createElement("img");
+      img.src = "Video.png";
+      preview.append(img);
+    }
+  });
 }
 
-renderPreview();
+class Element {
+  constructor(type, contentObj) {
+    this.id = pageObject.elements.length + 1;
+    this.type = type;
+
+    this.text = contentObj.text;
+    this.path = contentObj.path;
+    this.alt = contentObj.alt;
+    this.url = contentObj.url;
+
+    console.log(this);
+  }
+}
+
+document.addEventListener("DOMContentLoaded", init);
