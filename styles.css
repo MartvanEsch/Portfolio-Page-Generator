@@ -34,12 +34,19 @@ aside {
 
 #preview {
     margin: 20px;
-    div {
+    > div {
         margin-top: 40px;
         display: flex;
         flex-direction: column;
+        gap: 20px;
 
         width: 500px;
+    }
+
+    > div > div {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
     }
 
     > * {
@@ -50,4 +57,17 @@ aside {
 
 .hidden {
     display: none;
+}
+
+.divider {
+    height: 2px;
+    width: 100%;
+    background-color: gray;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.buttons {
+    display: flex;
+    flex-direction: column;
 }

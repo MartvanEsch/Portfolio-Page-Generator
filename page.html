@@ -21,6 +21,12 @@
             placeholder="Name"
             data-prop="name"
           />
+          <input
+            id="pathInput"
+            type="text"
+            placeholder="Path"
+            data-prop="path"
+          />
           <select id="categoryInput" data-prop="category">
             <option value="branding">Branding</option>
             <option value="creative_projects">Creative Projects</option>
@@ -68,15 +74,21 @@
           <h3>3.</h3>
           <h2>Export</h2>
           <p></p>
-          <input type="button" value="Page" />
-          <input type="button" value="Javascript Object" />
-          <input type="button" value="Save to cache" />
+          <input id="exportPageBtn" type="button" value="Page" />
+          <input id="saveCacheBtn" type="button" value="Save to cache" />
         </section>
 
         <section>
           <h2>Load</h2>
-          <textarea id="" name="" rows="5" cols="33"></textarea>
-          <input type="button" value="Load" />
+          <textarea id="loadInput" name="" rows="5" cols="33"></textarea>
+          <input id="loadTextBtn" type="button" value="Load" />
+          <div class="divider"></div>
+          <label>Page</label>
+          <input id="loadTextBtn" type="file" value="Load" />
+          <div class="divider"></div>
+          <label>Cache</label>
+          <input id="loadCacheBtn" type="button" value="Load" />
+          <div id="options"></div>
         </section>
       </aside>
 
