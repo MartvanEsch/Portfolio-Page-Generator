@@ -1,73 +1,102 @@
 * {
-    margin: 0;
-    padding: 0;
-    font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+  padding: 0;
+  font-family: "Lexend Deca", sans-serif;
+  color: whitesmoke;
+}
+
+body {
+  background-color: #455464;
+}
+
+main {
+  display: flex;
+  flex-direction: row;
+  height: 100vh;
 }
 
 aside {
-    background-color: lightgray;
-    padding: 20px;
+  background-color: #10161d;
+  padding: 20px;
+  height: 100%;
 
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  section {
     display: flex;
-    gap: 20px;
+    flex-direction: column;
+    padding: 20px;
+    background-color: #111d29;
 
-    section {
-        display: flex;
-        flex-direction: column;
-        padding: 5px;
-        background-color: rgb(177, 177, 177);
-
-        border-bottom: gray 2px solid ;
-
-        > div {
-            display: flex;
-            gap: 20px;
-        }
+    > div {
+      display: flex;
     }
+  }
 
-    #properties {
-        flex-direction: column;
-        gap: 0;
-        margin-top: 20px;
-    }
+  #properties {
+    flex-direction: column;
+    gap: 0;
+    margin-top: 20px;
+  }
+}
+
+h1 {
+  font-weight: 600;
+  font-size: 3rem;
+}
+
+h2 {
+  font-weight: 500;
+  margin-bottom: 4px;
+  font-size: 1.5rem;
+}
+
+p {
+  font-weight: 300;
+}
+
+input,
+select,
+button {
+  color: #111d29;
+  padding: 4px;
 }
 
 #preview {
-    margin: 20px;
-    > div {
-        margin-top: 40px;
-        display: flex;
-        flex-direction: column;
-        gap: 20px;
+  width: 100%;
+  > div {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
 
-        width: 500px;
-    }
+  > div > div {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
 
-    > div > div {
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-    }
-
-    > * {
-        padding: 20px;
-        border: black 2px solid;
-    }
+  > * {
+    padding: 20px;
+    border: whitesmoke 4px solid;
+  }
 }
 
 .hidden {
-    display: none;
+  display: none;
 }
 
 .divider {
-    height: 2px;
-    width: 100%;
-    background-color: gray;
-    margin-top: 10px;
-    margin-bottom: 10px;
+  height: 2px;
+  width: 100%;
+  background-color: whitesmoke;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 .buttons {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }

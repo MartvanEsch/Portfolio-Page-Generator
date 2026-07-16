@@ -1,3 +1,4 @@
+let activePages = [];
 class Page {
   constructor() {
     ((this.name = ""),
@@ -25,14 +26,17 @@ class Page {
   }
 
   loadNewPage(page) {
+    activePages.push(this);
     console.log(page);
     Object.assign(this, page);
 
     this.elements = page.elements.map((el) => {
       return new Element(el.type, el, el.id);
     });
+
     renderPreview();
     updateObjPreview();
+    updateTabs();
   }
 
   moveElementUp(index) {
@@ -163,7 +167,6 @@ class Page {
 }
 
 let myPage = new Page();
-
 function init() {
   let type = "";
 
@@ -180,17 +183,17 @@ function init() {
   const exportPageButton = document.querySelector("#exportPageBtn");
 
   exportPageButton.addEventListener("click", () => {
-    let html = myPage.exportPageHTML()
-    let blob = new Blob([html], {type: "text/html"})
+    let html = myPage.exportPageHTML();
+    let blob = new Blob([html], { type: "text/html" });
 
-    let url = URL.createObjectURL(blob)
+    let url = URL.createObjectURL(blob);
 
-    let a = document.createElement("a")
-    a.href = url
-    a.download = myPage.name
+    let a = document.createElement("a");
+    a.href = url;
+    a.download = myPage.name;
 
-    a.click()
-    URL.revokeObjectURL(a)
+    a.click();
+    URL.revokeObjectURL(a);
   });
 
   saveCacheButton.addEventListener("click", () => {
@@ -298,7 +301,7 @@ function updateObjPreview() {
 function renderPreview() {
   console.log("rendering preview");
 
-  const preview = document.querySelector("#preview div");
+  const preview = document.querySelector("#preview #html-output");
 
   preview.innerHTML = "";
 
@@ -384,6 +387,22 @@ function fetchCache() {
   });
 
   return cache;
+}
+
+function updateTabs() {
+  let tabsEl = document.querySelector("#preview #tabs");
+  tabsEl.innerHTML = "";
+  activePages.forEach((page) => {
+    let button = document.createElement("button");
+    button.dataset.page = JSON.stringify(page);
+    button.textContent = page.name;
+
+    button.addEventListener("click", (e) => {
+      myPage.loadNewPage(JSON.parse(e.target.dataset.page));
+    });
+
+    tabsEl.append(button);
+  });
 }
 
 class Element {
