@@ -70,8 +70,15 @@ export class Page {
     this.updateObject();
   }
 
-  exportPageHTML() {
-    let elementsHTML = this.elements.map((el) => el.toHTML()).join("\n");
+  getImages() {
+    let imageElements = this.elements.filter((el) => el.type === "Image");
+    return imageElements;
+  }
+
+  exportPageHTML(forPreview) {
+    let elementsHTML = this.elements
+      .map((el) => el.toHTML(forPreview))
+      .join("\n");
     console.log(elementsHTML);
 
     let html = `<!doctype html>
@@ -102,7 +109,7 @@ export class Page {
       href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,100..900;1,100..900&family=Funnel+Display:wght@300..800&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="project/styles.css" />
+    <link rel="stylesheet" href="${forPreview ? "project/styles.css" : "styles.css"}"/>
     <title>Mart van Esch - Portfolio</title>
     <meta
       name="description"

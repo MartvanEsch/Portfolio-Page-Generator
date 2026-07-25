@@ -11,7 +11,7 @@ export class Element {
     this.url = contentObj.url;
   }
 
-  toHTML() {
+  toHTML(forPreview) {
     if (this.type === "Header") {
       return `<h1>${this.text}</h1>`;
     }
@@ -25,7 +25,13 @@ export class Element {
       return `<small>${this.text}</small>`;
     }
     if (this.type === "Image") {
-      return `<img src="${this.path || "Placeholder.png"}" alt="${this.alt}">`;
+      if (forPreview) {
+        return `<img src="${URL.createObjectURL(this.path)}" alt="${this.alt}">`;
+      } else {
+        console.log("for export")
+        console.log(this)
+        return `<img src="images/${this.path.name}" alt="${this.alt}">`
+      }
     }
     if (this.type === "Video") {
       return `<iframe src="${this.path}"></iframe>`;

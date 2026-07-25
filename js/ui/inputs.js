@@ -1,3 +1,6 @@
+import cssContent from "../../project/styles.css?raw";
+import jsContent from "../../project/project.js?raw";
+
 import { myPage } from "../app.js";
 
 import { fetchCache } from "../managers/StorageManager.js";
@@ -5,6 +8,7 @@ import { fetchCache } from "../managers/StorageManager.js";
 // LIBRARIES
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
+import Compressor from "compressorjs";
 
 export function setupInputFields(elementValue) {
   const addInputsProperties = {
@@ -71,15 +75,30 @@ export function setupEventlisteners() {
         const key = el.placeholder.toLowerCase();
         contentObj[key] = el.value;
       });
+
+    if (compressed) {
+      contentObj.path = compressed;
+      compressed = "";
+    }
     myPage.addElement(type, contentObj);
   });
 
   const exportPageButton = document.querySelector("#exportPageBtn");
-  exportPageButton.addEventListener("click", () => {
-    let html = myPage.exportPageHTML();
+  exportPageButton.addEventListener("click", async function () {
+    let html = myPage.exportPageHTML(false);
     let zip = new JSZip();
 
+    // Voeg ze toe aan de zip
     zip.file("index.html", html);
+    zip.file("styles.css", cssContent);
+    zip.file("script.js", jsContent);
+    zip.file("data.json", JSON.stringify(myPage))
+
+    myPage.getImages().forEach((image) => {
+      console.log(image);
+
+      zip.file(`images/${image.path.name}`, image.path);
+    });
 
     zip.generateAsync({ type: "blob" }).then(function (content) {
       saveAs(content, "example.zip");
@@ -119,5 +138,34 @@ export function setupEventlisteners() {
   loadTextButton.addEventListener("click", () => {
     myPage.loadNewPage(JSON.parse(loadInput.value));
     loadInput.value = "";
+  });
+
+  let compressed;
+  const fileInput = document.querySelector(`input[type="file"]`);
+  console.log(fileInput);
+  fileInput.addEventListener("change", (e) => {
+    let file = e.target.files[0];
+
+    if (file) {
+      new Compressor(file, {
+        quality: 0.6,
+        maxWidth: 1200,
+        maxHeight: 1200,
+        checkOrientation: false, // <-- DIT was de boosdoener bij de camera-foto's!
+        strict: false,
+        convertSize: 0,
+        mimeType: "image/jpeg",
+
+        success(result) {
+          console.log("Oud:", (file.size / 1024).toFixed(1), "KB");
+          console.log("Nieuw:", (result.size / 1024).toFixed(1), "KB");
+
+          compressed = result;
+        },
+        error(err) {
+          console.error(err.message);
+        },
+      });
+    }
   });
 }

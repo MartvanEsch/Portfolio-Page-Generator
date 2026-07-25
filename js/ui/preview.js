@@ -81,7 +81,8 @@ export function renderPreview() {
 
   let iframe = document.querySelector("iframe")
 
-  iframe.srcdoc = myPage.exportPageHTML()
+  console.log(myPage.getImages())
+  iframe.srcdoc = myPage.exportPageHTML(true)
 }
 
 export function updateObjPreview() {
