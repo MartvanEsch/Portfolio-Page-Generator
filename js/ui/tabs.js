@@ -1,4 +1,9 @@
 import { activePages } from "../managers/TabManager.js";
+import { myPage } from "../app.js";
+
+// LIBRARIES
+import JSZip from "jszip";
+import { saveAs } from "file-saver";
 
 export function updateTabs() {
   let tabsEl = document.querySelector("#preview #tabs");
@@ -15,12 +20,3 @@ export function updateTabs() {
     tabsEl.append(button);
   });
 }
-
-
-
-
-
-
-
-
-

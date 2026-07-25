@@ -6,7 +6,7 @@
 }
 
 body {
-  background-color: #455464;
+  background-color: #141516;
 }
 
 main {
@@ -16,19 +16,26 @@ main {
 }
 
 aside {
-  background-color: #10161d;
-  padding: 20px;
-  height: 100%;
+  > * {
+    padding: 20px;
+    margin: 8px;
+  }
 
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 4px;
+
+  header {
+    border-bottom: rgb(29, 27, 27) 4px solid;
+    margin: 0;
+    margin-bottom: 20px;
+  }
 
   section {
     display: flex;
     flex-direction: column;
     padding: 20px;
-    background-color: #111d29;
+    background-color: #1e1e1f;
 
     > div {
       display: flex;
@@ -80,12 +87,17 @@ button {
 
   > * {
     padding: 20px;
-    border: whitesmoke 4px solid;
+    border: rgb(29, 27, 27) 4px solid;
   }
 
   #tabs {
     display: flex;
     flex-direction: row;
+  }
+
+  iframe {
+    width: max-content;
+    aspect-ratio: 16 / 9;
   }
 }
 

@@ -2,7 +2,7 @@
 import { Element } from "./Element.js";
 
 // VARS
-import { activePages  } from "../managers/TabManager.js";
+import { activePages } from "../managers/TabManager.js";
 
 // FUNCS
 import { updateObjPreview, renderPreview } from "../ui/preview.js";
@@ -80,7 +80,6 @@ export class Page {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-    <script src="project.js" defer></script>
     <link
       href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
       rel="stylesheet"
@@ -103,7 +102,7 @@ export class Page {
       href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,100..900;1,100..900&family=Funnel+Display:wght@300..800&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="project/styles.css" />
     <title>Mart van Esch - Portfolio</title>
     <meta
       name="description"

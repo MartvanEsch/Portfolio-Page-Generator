@@ -78,6 +78,10 @@ export function renderPreview() {
 
     preview.append(div);
   });
+
+  let iframe = document.querySelector("iframe")
+
+  iframe.srcdoc = myPage.exportPageHTML()
 }
 
 export function updateObjPreview() {
