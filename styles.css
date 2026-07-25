@@ -82,6 +82,11 @@ button {
     padding: 20px;
     border: whitesmoke 4px solid;
   }
+
+  #tabs {
+    display: flex;
+    flex-direction: row;
+  }
 }
 
 .hidden {

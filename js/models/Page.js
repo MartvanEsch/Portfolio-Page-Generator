@@ -1,4 +1,80 @@
-<!doctype html>
+// CLASSES
+import { Element } from "./Element.js";
+
+// VARS
+import { activePages  } from "../managers/TabManager.js";
+
+// FUNCS
+import { updateObjPreview, renderPreview } from "../ui/preview.js";
+import { updateTabs } from "../ui/tabs.js";
+
+export class Page {
+  constructor() {
+    ((this.name = ""),
+      (this.elements = []),
+      (this.new = false),
+      (this.category = "branding"),
+      (this.path = ""));
+  }
+
+  updateObject(property, value) {
+    if (property !== undefined) {
+      this[property] = value;
+    }
+
+    updateObjPreview();
+    renderPreview();
+  }
+
+  addElement(type, contentObj) {
+    const newElement = new Element(type, contentObj, this.elements.length + 1);
+    this.elements.push(newElement);
+
+    updateObjPreview();
+    renderPreview();
+  }
+
+  loadNewPage(page) {
+    activePages.push(this);
+    console.log(page);
+    Object.assign(this, page);
+
+    this.elements = page.elements.map((el) => {
+      return new Element(el.type, el, el.id);
+    });
+
+    renderPreview();
+    updateObjPreview();
+    updateTabs();
+  }
+
+  moveElementUp(index) {
+    let temp = this.elements[index];
+    this.elements[index] = this.elements[index - 1];
+    this.elements[index - 1] = temp;
+
+    this.updateObject();
+  }
+
+  moveElementDown(index) {
+    let temp = this.elements[index];
+    this.elements[index] = this.elements[index + 1];
+    this.elements[index + 1] = temp;
+
+    this.updateObject();
+  }
+
+  deleteElement(index) {
+    this.elements.splice(index, 1);
+    this.elements.forEach((el, idx) => (el.id = idx + 1));
+    this.updateObject();
+  }
+
+  exportPageHTML() {
+    let elementsHTML = this.elements.map((el) => el.toHTML()).join("\n");
+    console.log(elementsHTML);
+
+    let html = `<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -87,16 +163,14 @@
               </svg>
             </a>
           </div>
-          <div id="images"><h1>This project is very interesting</h1>
-<h2>little subheader</h2>
-<p>paragrahp lorem ipsum</p>
-<img src="asddasads" alt="adsads">
-<h2>header</h2>
-<p>headeradsadsadsa</p>
-<iframe src="undefined"></iframe></div>
-          <p>Bedankt voor het bezoeken van mijn werk.</p>
+          <div id="images">${elementsHTML}</div>
         </div>
       </section>
     </main>
   </body>
 </html>
+`;
+
+    return html;
+  }
+}
