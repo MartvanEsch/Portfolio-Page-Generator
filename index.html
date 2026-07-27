@@ -22,12 +22,13 @@
           <h1>Portmaker</h1>
           <p>A page builder tool</p>
         </header>
+
         <section>
-          <h2>Settings</h2>
+          <h2>Project Settings</h2>
           <input
             id="nameInput"
             type="text"
-            placeholder="Name"
+            placeholder="Project Name"
             data-prop="name"
           />
           <input
@@ -42,60 +43,45 @@
             <option value="misc">Misc</option>
             <option value="print_&_posters">Print & Posters</option>
           </select>
-          <div>
-            <label>New</label>
-            <input id="newInput" type="checkbox" data-prop="new" />
-          </div>
         </section>
 
-        <section id="elements">
-          <h2>Elements</h2>
+        <section id="add-elements">
+          <h2>Add Elements</h2>
           <div>
-            <div>
-              <input class="addInput" type="button" value="Header" />
-              <input class="addInput" type="button" value="Subheader" />
-              <input class="addInput" type="button" value="Paragraph" />
-              <input class="addInput" type="button" value="Caption" />
-            </div>
-            <div>
-              <input class="addInput" type="button" value="Image" />
-              <input class="addInput" type="button" value="Video" />
-              <input class="addInput" type="button" value="Link" />
-            </div>
-          </div>
-
-          <div id="properties" class="hidden">
-            <h2>Properties</h2>
-            <div>
-              <input type="text" placeholder="Text" />
-              <input type="file" placeholder="Path" />
-              <input type="text" placeholder="Alt" />
-              <input type="text" placeholder="Embed" />
-              <input type="text" placeholder="Url" />
-            </div>
-
-            <input id="addElInput" type="button" value="Add" />
+            <input class="addInput" type="button" value="Header" />
+            <input class="addInput" type="button" value="Paragraph" />
+            <input class="addInput" type="button" value="Image" />
+            <input class="addInput" type="button" value="Video" />
           </div>
         </section>
 
         <section>
-          <h2>Export</h2>
-          <p></p>
-          <input id="exportPageBtn" type="button" value="Page" />
-          <input id="saveCacheBtn" type="button" value="Save to cache" />
+          <h2>Page Structure</h2>
+          <ul>
+            <li><p>Empty</p></li>
+          </ul>
+        </section>
+
+        <section id="properties" class="hidden">
+          <h2>Properties</h2>
+          <div>
+            <input type="text" placeholder="Text" class="hidden" />
+            <button id="imageButton" class="hidden">Image</button>
+            <input id="imageInput" type="file" class="hidden">
+            <input type="text" placeholder="Alt" class="hidden"/>
+            <input type="text" placeholder="Embed" class="hidden"/>
+            <input type="text" placeholder="Url" class="hidden"/>
+          </div>
+
+          <button id="addElInput">Add</button>
         </section>
 
         <section>
-          <h2>Load</h2>
-          <textarea id="loadInput" name="" rows="5" cols="33"></textarea>
-          <input id="loadTextBtn" type="button" value="Load" />
-          <div class="divider"></div>
-          <label>Page</label>
-          <input id="loadTextBtn" type="file" value="Load" />
-          <div class="divider"></div>
-          <label>Cache</label>
-          <input id="loadCacheBtn" type="button" value="Load" />
-          <div id="options"></div>
+          <h2>Storage & Export</h2>
+          <div>
+            <button>Load ZIP</button>
+            <button id="exportPageBtn">Export ZIP</button>
+          </div>
         </section>
       </aside>
 

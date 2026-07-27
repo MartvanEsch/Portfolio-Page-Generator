@@ -22,12 +22,26 @@ export function setupInputFields(elementValue) {
   };
 
   const properties = document.querySelector("#properties");
-  let propertiesInputs = properties.querySelectorAll("div > input");
+  let propertiesInputs = properties.querySelectorAll("div > *");
   console.log(propertiesInputs);
   const inputsNeeded = addInputsProperties[elementValue];
 
   propertiesInputs.forEach((el) => {
-    if (!inputsNeeded.includes(el.placeholder)) {
+    let isImageButton = el.id === "imageButton"
+    let matchesPlaceholder = inputsNeeded.includes(el.placeholder)
+    console.log(el.placeholder, inputsNeeded)
+    console.log(matchesPlaceholder)
+    console.log("---------------------------")
+
+    let showElement = false
+
+    if (isImageButton) {
+      showElement = elementValue === "Image" 
+    } else {
+      showElement = matchesPlaceholder
+    }
+
+    if (!showElement) {
       el.classList.add("hidden");
     } else {
       el.classList.remove("hidden");
@@ -53,7 +67,6 @@ export function setupEventlisteners() {
   const selectElementInputs = document.querySelectorAll(".addInput");
   selectElementInputs.forEach((input) => {
     input.addEventListener("click", (e) => {
-      console.log(e.target);
       let value = e.target.value;
       type = value;
       setupInputFields(value);
@@ -88,15 +101,12 @@ export function setupEventlisteners() {
     let html = myPage.exportPageHTML(false);
     let zip = new JSZip();
 
-    // Voeg ze toe aan de zip
     zip.file("index.html", html);
     zip.file("styles.css", cssContent);
     zip.file("script.js", jsContent);
-    zip.file("data.json", JSON.stringify(myPage))
+    zip.file("data.json", JSON.stringify(myPage));
 
     myPage.getImages().forEach((image) => {
-      console.log(image);
-
       zip.file(`images/${image.path.name}`, image.path);
     });
 
@@ -105,67 +115,34 @@ export function setupEventlisteners() {
     });
   });
 
-  const saveCacheButton = document.querySelector("#saveCacheBtn");
-  saveCacheButton.addEventListener("click", () => {
-    if (myPage.name != "") {
-      localStorage.setItem(myPage.name, JSON.stringify(myPage));
-    }
-  });
-
-  const loadCacheButton = document.querySelector("#loadCacheBtn");
-  loadCacheButton.addEventListener("click", () => {
-    let cache = fetchCache();
-
-    let optionsDiv = document.querySelector("#options");
-    optionsDiv.innerHTML = "";
-    cache.forEach((page, index) => {
-      let pageButton = document.createElement("button");
-      pageButton.textContent = page.name + `(${index + 1})`;
-      pageButton.classList.add("pageButton");
-      pageButton.dataset.id = index + 1;
-
-      pageButton.addEventListener("click", () => {
-        myPage.loadNewPage(cache[pageButton.dataset.id - 1]);
-      });
-      optionsDiv.append(pageButton);
-    });
-
-    console.log(cache);
-  });
-
-  const loadInput = document.querySelector("#loadInput");
-  const loadTextButton = document.querySelector("#loadTextBtn");
-  loadTextButton.addEventListener("click", () => {
-    myPage.loadNewPage(JSON.parse(loadInput.value));
-    loadInput.value = "";
-  });
-
   let compressed;
-  const fileInput = document.querySelector(`input[type="file"]`);
-  console.log(fileInput);
-  fileInput.addEventListener("change", (e) => {
-    let file = e.target.files[0];
+  const fileButton = document.querySelector("#imageButton");
+  const fileInput = document.querySelector("#imageInput");
+  fileButton.addEventListener("click", () => {
+    fileInput.addEventListener("change", (e) => {
+      let file = e.target.files[0];
+      if (file) {
+        new Compressor(file, {
+          quality: 0.8,
+          maxWidth: 1400,
+          maxHeight: 1400,
+          checkOrientation: false,
+          strict: false,
+          convertSize: 0,
+          mimeType: "image/jpeg",
 
-    if (file) {
-      new Compressor(file, {
-        quality: 0.6,
-        maxWidth: 1200,
-        maxHeight: 1200,
-        checkOrientation: false, // <-- DIT was de boosdoener bij de camera-foto's!
-        strict: false,
-        convertSize: 0,
-        mimeType: "image/jpeg",
+          success(result) {
+            console.log("Oud:", (file.size / 1024).toFixed(1), "KB");
+            console.log("Nieuw:", (result.size / 1024).toFixed(1), "KB");
 
-        success(result) {
-          console.log("Oud:", (file.size / 1024).toFixed(1), "KB");
-          console.log("Nieuw:", (result.size / 1024).toFixed(1), "KB");
-
-          compressed = result;
-        },
-        error(err) {
-          console.error(err.message);
-        },
-      });
-    }
+            compressed = result;
+          },
+          error(err) {
+            console.error(err.message);
+          },
+        });
+      }
+    });
+    fileInput.click();
   });
 }
