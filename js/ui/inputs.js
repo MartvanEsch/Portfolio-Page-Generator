@@ -1,8 +1,10 @@
 import cssContent from "../../project/styles.css?raw";
 import jsContent from "../../project/project.js?raw";
 
+// CLASSES
 import { myPage } from "../app.js";
 
+// FUNCS
 import { fetchCache } from "../managers/StorageManager.js";
 
 // LIBRARIES
@@ -27,18 +29,18 @@ export function setupInputFields(elementValue) {
   const inputsNeeded = addInputsProperties[elementValue];
 
   propertiesInputs.forEach((el) => {
-    let isImageButton = el.id === "imageButton"
-    let matchesPlaceholder = inputsNeeded.includes(el.placeholder)
-    console.log(el.placeholder, inputsNeeded)
-    console.log(matchesPlaceholder)
-    console.log("---------------------------")
+    let isImageButton = el.id === "imageButton";
+    let matchesPlaceholder = inputsNeeded.includes(el.placeholder);
+    console.log(el.placeholder, inputsNeeded);
+    console.log(matchesPlaceholder);
+    console.log("---------------------------");
 
-    let showElement = false
+    let showElement = false;
 
     if (isImageButton) {
-      showElement = elementValue === "Image" 
+      showElement = elementValue === "Image";
     } else {
-      showElement = matchesPlaceholder
+      showElement = matchesPlaceholder;
     }
 
     if (!showElement) {
@@ -111,8 +113,35 @@ export function setupEventlisteners() {
     });
 
     zip.generateAsync({ type: "blob" }).then(function (content) {
-      saveAs(content, "example.zip");
+      saveAs(content, "page.zip");
     });
+  });
+
+  const importPageButton = document.querySelector("#importPageBtn");
+  const zipInput = document.querySelector("#zipInput");
+  console.log(importPageButton);
+  importPageButton.addEventListener("click", () => {
+    zipInput.addEventListener("change", async (e) => {
+      let file = e.target.files[0];
+
+      try {
+        const zip = await JSZip.loadAsync(file);
+        const jsonFile = zip.file("data.json");
+        console.log(jsonFile);
+
+        if (jsonFile) {
+          const jsonContent = await jsonFile.async("string");
+          const pageData = JSON.parse(jsonContent);
+          console.log("Ingeladen project data:", pageData);
+
+          myPage.loadNewPage(pageData)
+        }
+
+      } catch (error) {
+        console.log("ERROR");
+      }
+    });
+    zipInput.click();
   });
 
   let compressed;

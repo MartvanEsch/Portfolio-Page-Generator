@@ -9,6 +9,8 @@ export class Element {
     this.path = contentObj.path;
     this.alt = contentObj.alt;
     this.url = contentObj.url;
+
+    this.icon = `../../img/${type}.svg`
   }
 
   toHTML(forPreview) {
@@ -39,3 +41,4 @@ export class Element {
     return ""; // Fallback
   }
 }
+

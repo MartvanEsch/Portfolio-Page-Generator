@@ -5,7 +5,7 @@ import { Element } from "./Element.js";
 import { activePages } from "../managers/TabManager.js";
 
 // FUNCS
-import { updateObjPreview, renderPreview } from "../ui/preview.js";
+import { updateObjPreview, renderPreview, updateLayers } from "../ui/preview.js";
 import { updateTabs } from "../ui/tabs.js";
 
 export class Page {
@@ -24,6 +24,7 @@ export class Page {
 
     updateObjPreview();
     renderPreview();
+    updateLayers()
   }
 
   addElement(type, contentObj) {
@@ -32,6 +33,7 @@ export class Page {
 
     updateObjPreview();
     renderPreview();
+    updateLayers()
   }
 
   loadNewPage(page) {
@@ -45,6 +47,7 @@ export class Page {
 
     renderPreview();
     updateObjPreview();
+    updateLayers()
     updateTabs();
   }
 
@@ -54,6 +57,7 @@ export class Page {
     this.elements[index - 1] = temp;
 
     this.updateObject();
+    updateLayers()
   }
 
   moveElementDown(index) {
@@ -62,12 +66,14 @@ export class Page {
     this.elements[index + 1] = temp;
 
     this.updateObject();
+    updateLayers()
   }
 
   deleteElement(index) {
     this.elements.splice(index, 1);
     this.elements.forEach((el, idx) => (el.id = idx + 1));
     this.updateObject();
+    updateLayers()
   }
 
   getImages() {

@@ -103,6 +103,27 @@ button {
   }
 }
 
+#layers {
+  li {
+    display: flex;
+    margin-top: 4px;
+    padding: 8px;
+    background-color: #515153;
+
+    justify-content: space-between;
+    align-items: center;
+
+    div {
+      display: flex;
+
+      div {
+        display: flex;
+        flex-direction: column
+      };
+    }
+  }
+}
+
 .hidden {
   display: none !important;
 }

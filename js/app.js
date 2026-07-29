@@ -20,7 +20,7 @@ import { saveAs } from "file-saver";
 export let myPage = new Page();
 
 function init() {
-  setupEventlisteners();
+   setupEventlisteners();
   updateObjPreview();
 }
 
