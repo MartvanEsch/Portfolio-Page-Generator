@@ -67,10 +67,10 @@
           <div>
             <input type="text" placeholder="Text" class="hidden" />
             <button id="imageButton" class="hidden">Image</button>
-            <input id="imageInput" type="file" class="hidden">
-            <input type="text" placeholder="Alt" class="hidden"/>
-            <input type="text" placeholder="Embed" class="hidden"/>
-            <input type="text" placeholder="Url" class="hidden"/>
+            <input id="imageInput" type="file" class="hidden" />
+            <input type="text" placeholder="Alt" class="hidden" />
+            <input type="text" placeholder="Embed" class="hidden" />
+            <input type="text" placeholder="Url" class="hidden" />
           </div>
 
           <button id="addElInput">Add</button>
@@ -80,7 +80,7 @@
           <h2>Storage & Export</h2>
           <div>
             <button id="importPageBtn">Import ZIP</button>
-            <input type="file" id="zipInput" class="hidden">
+            <input type="file" id="zipInput" class="hidden" />
             <button id="exportPageBtn">Export ZIP</button>
           </div>
         </section>
@@ -88,7 +88,13 @@
 
       <section id="preview">
         <div id="tabs"></div>
-        <pre id="json-output"></pre>
+        <div>
+          <button id="editBtn">Edit</button>
+          <button class="hidden" id="saveBtn">Save</button>
+          <pre id="json-output"></pre>
+          <textarea id="jsonTextArea" class="hidden"></textarea>
+        </div>
+
         <iframe></iframe>
         <div id="html-output"></div>
       </section>

@@ -134,9 +134,8 @@ export function setupEventlisteners() {
           const pageData = JSON.parse(jsonContent);
           console.log("Ingeladen project data:", pageData);
 
-          myPage.loadNewPage(pageData)
+          myPage.loadNewPage(pageData);
         }
-
       } catch (error) {
         console.log("ERROR");
       }
@@ -174,4 +173,32 @@ export function setupEventlisteners() {
     });
     fileInput.click();
   });
+
+  let editButton = document.querySelector("#editBtn");
+  let saveButton = document.querySelector("#saveBtn")
+  let jsonOutput = document.querySelector("#json-output");
+  let textArea = document.querySelector("#jsonTextArea");
+
+  editButton.addEventListener("click", (e) => {
+    e.target.classList.add("hidden")
+    saveButton.classList.remove("hidden")
+
+    jsonOutput.classList.add("hidden")
+    textArea.classList.remove("hidden");
+    textArea.innerHTML = jsonOutput.textContent;
+
+    const aantalRegels = jsonOutput.textContent.split('\n').length;
+    textArea.setAttribute("rows", aantalRegels)
+    textArea.focus()
+  });
+
+  saveButton.addEventListener("click", (e) => {
+    e.target.classList.add("hidden")
+    editButton.classList.remove("hidden")
+
+    jsonOutput.classList.remove("hidden")
+    textArea.classList.add("hidden")
+
+    myPage.loadNewPage(JSON.parse(textArea.value))
+  })
 }

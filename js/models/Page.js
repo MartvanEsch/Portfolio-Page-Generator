@@ -5,8 +5,20 @@ import { Element } from "./Element.js";
 import { activePages } from "../managers/TabManager.js";
 
 // FUNCS
-import { updateObjPreview, renderPreview, updateLayers } from "../ui/preview.js";
+import {
+  updateProperties,
+  updateObjPreview,
+  renderPreview,
+  updateLayers,
+} from "../ui/preview.js";
 import { updateTabs } from "../ui/tabs.js";
+
+// LIBS
+import { Octokit } from "octokit";
+
+///////////////////////
+
+let octokit = new Octokit();
 
 export class Page {
   constructor() {
@@ -15,6 +27,29 @@ export class Page {
       (this.new = false),
       (this.category = "branding"),
       (this.path = ""));
+
+    this.setVersion();
+  }
+
+  async setVersion() {
+    try {
+      const { data } = await octokit.rest.repos.listCommits({
+        owner: "MartvanEsch",
+        repo: "Portfolio-Page-Generator",
+        per_page: 1,
+      });
+
+      const { commit } = data[0];
+
+      let version = commit.message.split("\n\n")[0]
+      let url = data[0].html_url
+      
+      this.release = {version: version, url: url}
+
+      console.log(this)
+    } catch (error) {
+      console.error("Kon laatste push niet ophalen:", error);
+    }
   }
 
   updateObject(property, value) {
@@ -24,7 +59,7 @@ export class Page {
 
     updateObjPreview();
     renderPreview();
-    updateLayers()
+    updateLayers();
   }
 
   addElement(type, contentObj) {
@@ -33,7 +68,7 @@ export class Page {
 
     updateObjPreview();
     renderPreview();
-    updateLayers()
+    updateLayers();
   }
 
   loadNewPage(page) {
@@ -47,8 +82,9 @@ export class Page {
 
     renderPreview();
     updateObjPreview();
-    updateLayers()
+    updateLayers();
     updateTabs();
+    updateProperties()
   }
 
   moveElementUp(index) {
@@ -57,7 +93,7 @@ export class Page {
     this.elements[index - 1] = temp;
 
     this.updateObject();
-    updateLayers()
+    updateLayers();
   }
 
   moveElementDown(index) {
@@ -66,14 +102,14 @@ export class Page {
     this.elements[index + 1] = temp;
 
     this.updateObject();
-    updateLayers()
+    updateLayers();
   }
 
   deleteElement(index) {
     this.elements.splice(index, 1);
     this.elements.forEach((el, idx) => (el.id = idx + 1));
     this.updateObject();
-    updateLayers()
+    updateLayers();
   }
 
   getImages() {

@@ -76,3 +76,9 @@ export function updateLayers() {
   }
   console.log(layersDiv);
 }
+
+export function updateProperties() {
+  console.log("setting name")
+  let nameInput = document.querySelector("#nameInput")
+  nameInput.value = myPage.name
+}
