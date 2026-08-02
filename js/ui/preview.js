@@ -1,10 +1,12 @@
 import { myPage } from "../app.js";
 
 export function renderPreview() {
-  let iframe = document.querySelector("iframe");
+  let iframe = document.querySelectorAll("iframe");
 
-  console.log(myPage.getImages());
-  iframe.srcdoc = myPage.exportPageHTML(true);
+  iframe.forEach((frame) => {
+      frame.srcdoc = myPage.exportPageHTML(true);
+  })
+
 }
 
 export function updateObjPreview() {

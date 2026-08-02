@@ -119,7 +119,7 @@ export function setupEventlisteners() {
 
   const importPageButton = document.querySelector("#importPageBtn");
   const zipInput = document.querySelector("#zipInput");
-  console.log(importPageButton);
+
   importPageButton.addEventListener("click", () => {
     zipInput.addEventListener("change", async (e) => {
       let file = e.target.files[0];
@@ -127,17 +127,17 @@ export function setupEventlisteners() {
       try {
         const zip = await JSZip.loadAsync(file);
         const jsonFile = zip.file("data.json");
-        console.log(jsonFile);
 
         if (jsonFile) {
           const jsonContent = await jsonFile.async("string");
+          console.log(jsonContent)
           const pageData = JSON.parse(jsonContent);
           console.log("Ingeladen project data:", pageData);
 
-          myPage.loadNewPage(pageData);
+          await myPage.loadNewPage(pageData, zip);
         }
       } catch (error) {
-        console.log("ERROR");
+        console.log(error);
       }
     });
     zipInput.click();
@@ -148,6 +148,7 @@ export function setupEventlisteners() {
   const fileInput = document.querySelector("#imageInput");
   fileButton.addEventListener("click", () => {
     fileInput.addEventListener("change", (e) => {
+      addElInput.classList.add("hidden")
       let file = e.target.files[0];
       if (file) {
         new Compressor(file, {
@@ -163,6 +164,7 @@ export function setupEventlisteners() {
             console.log("Oud:", (file.size / 1024).toFixed(1), "KB");
             console.log("Nieuw:", (result.size / 1024).toFixed(1), "KB");
 
+            addElInput.classList.remove("hidden")
             compressed = result;
           },
           error(err) {
@@ -175,30 +177,30 @@ export function setupEventlisteners() {
   });
 
   let editButton = document.querySelector("#editBtn");
-  let saveButton = document.querySelector("#saveBtn")
+  let saveButton = document.querySelector("#saveBtn");
   let jsonOutput = document.querySelector("#json-output");
   let textArea = document.querySelector("#jsonTextArea");
 
   editButton.addEventListener("click", (e) => {
-    e.target.classList.add("hidden")
-    saveButton.classList.remove("hidden")
+    e.target.classList.add("hidden");
+    saveButton.classList.remove("hidden");
 
-    jsonOutput.classList.add("hidden")
+    jsonOutput.classList.add("hidden");
     textArea.classList.remove("hidden");
     textArea.innerHTML = jsonOutput.textContent;
 
-    const aantalRegels = jsonOutput.textContent.split('\n').length;
-    textArea.setAttribute("rows", aantalRegels)
-    textArea.focus()
+    const aantalRegels = jsonOutput.textContent.split("\n").length;
+    textArea.setAttribute("rows", aantalRegels);
+    textArea.focus();
   });
 
   saveButton.addEventListener("click", (e) => {
-    e.target.classList.add("hidden")
-    editButton.classList.remove("hidden")
+    e.target.classList.add("hidden");
+    editButton.classList.remove("hidden");
 
-    jsonOutput.classList.remove("hidden")
-    textArea.classList.add("hidden")
+    jsonOutput.classList.remove("hidden");
+    textArea.classList.add("hidden");
 
-    myPage.loadNewPage(JSON.parse(textArea.value))
-  })
+    myPage.loadNewPage(JSON.parse(textArea.value));
+  });
 }

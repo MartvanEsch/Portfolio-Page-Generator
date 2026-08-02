@@ -436,7 +436,7 @@ form > * {
 }
 #images * {
   max-width: 100%;
-  max-height: 80vh;
+  max-height: 85vh;
 }
 /* Classes */
 .flex {

@@ -97,9 +97,7 @@ button {
   }
 
   iframe {
-    width: max-content;
-    aspect-ratio: 16 / 9;
-    width: 1400px;
+    height: 75vh;
   }
 
   textarea {

@@ -41,12 +41,12 @@ export class Page {
 
       const { commit } = data[0];
 
-      let version = commit.message.split("\n\n")[0]
-      let url = data[0].html_url
-      
-      this.release = {version: version, url: url}
+      let version = commit.message.split("\n\n")[0];
+      let url = data[0].html_url;
 
-      console.log(this)
+      this.release = { version: version, url: url };
+
+      console.log(this);
     } catch (error) {
       console.error("Kon laatste push niet ophalen:", error);
     }
@@ -71,20 +71,30 @@ export class Page {
     updateLayers();
   }
 
-  loadNewPage(page) {
+  async loadNewPage(page, files) {
+    if (files) {
+      console.log("loading from import ", files);
+    }
+
     activePages.push(this);
-    console.log(page);
     Object.assign(this, page);
 
-    this.elements = page.elements.map((el) => {
-      return new Element(el.type, el, el.id);
-    });
+    this.elements = await Promise.all(
+      page.elements.map(async (el) => {
+        let element = new Element(el.type, el, el.id, files);
+
+        if (el.type === "Image" && files) {
+          await element.setImage(files)
+        }
+        return element
+      }),
+    );
 
     renderPreview();
     updateObjPreview();
     updateLayers();
     updateTabs();
-    updateProperties()
+    updateProperties();
   }
 
   moveElementUp(index) {
@@ -168,35 +178,6 @@ export class Page {
       <section id="description" class="flex column gap-big align-center">
         <div class="flex gap column align-center">
           <div class="flex gap-big align-center space-between">
-            <div class="flex gap align-center space-between">
-              <a>
-                <svg
-                  class="icon"
-                  width="19"
-                  height="30"
-                  viewBox="0 0 19 30"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M15.4054 30L0 15L15.4054 0L19 3.5L7.18919 15L19 26.5L15.4054 30Z"
-                  />
-                </svg>
-              </a>
-              <h1></h1>
-              <a>
-                <svg
-                  class="icon"
-                  width="18"
-                  height="30"
-                  viewBox="0 0 18 30"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M11.1892 15L0 3.5L3.40541 0L18 15L3.40541 30L0 26.5L11.1892 15Z"
-                  />
-                </svg>
-              </a>
-            </div>
             <a href="index.html">
               <svg
                 class="icon"
