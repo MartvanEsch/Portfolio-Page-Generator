@@ -4,9 +4,8 @@ export function renderPreview() {
   let iframe = document.querySelectorAll("iframe");
 
   iframe.forEach((frame) => {
-      frame.srcdoc = myPage.exportPageHTML(true);
-  })
-
+    frame.srcdoc = myPage.exportPageHTML(true);
+  });
 }
 
 export function updateObjPreview() {
@@ -35,44 +34,48 @@ export function updateLayers() {
 
     myPage.elements.forEach((el, index) => {
       let li = document.createElement("li");
-      
-      let p = document.createElement("p")
-      p.textContent = el.text
+      li.dataset.id = el.id
 
-  
-      let img = document.createElement("img")
-      img.src = el.icon
+      let p = document.createElement("p");
+      if (el.text) {
+        p.textContent = el.text;
+      } else {
+        p.textContent = "Laag " + el.id
+      }
 
-      li.append(img)
-      li.append(p)
+      let img = document.createElement("img");
+      img.src = el.icon;
 
-      let div = document.createElement("div")
-      let deleteButton = document.createElement("button")
-      deleteButton.textContent = "Delete"
+      li.append(img);
+      li.append(p);
+
+      let div = document.createElement("div");
+      let deleteButton = document.createElement("button");
+      deleteButton.textContent = "Delete";
       deleteButton.addEventListener("click", (e) => {
-        myPage.deleteElement(index)
-      })
+        myPage.deleteElement(index);
+      });
 
-      let div2 = document.createElement("div")
-      let upButton = document.createElement("button")
-      upButton.textContent = "Up"
+      let div2 = document.createElement("div");
+      let upButton = document.createElement("button");
+      upButton.textContent = "Up";
       upButton.addEventListener("click", () => {
-        myPage.moveElementUp(index)
-      })
+        myPage.moveElementUp(index);
+      });
 
-      let downButton = document.createElement("button")
-      downButton.textContent = "Down"
+      let downButton = document.createElement("button");
+      downButton.textContent = "Down";
       downButton.addEventListener("click", () => {
-        myPage.moveElementDown(index)
-      })
-      div2.append(upButton)
-      div2.append(downButton)
+        myPage.moveElementDown(index);
+      });
+      div2.append(upButton);
+      div2.append(downButton);
 
-      div.append(div2)
+      div.append(div2);
 
-      div.append(deleteButton)
+      div.append(deleteButton);
 
-      li.append(div)
+      li.append(div);
       layersDiv.append(li);
     });
   }
@@ -80,7 +83,7 @@ export function updateLayers() {
 }
 
 export function updateProperties() {
-  console.log("setting name")
-  let nameInput = document.querySelector("#nameInput")
-  nameInput.value = myPage.name
+  console.log("setting name");
+  let nameInput = document.querySelector("#nameInput");
+  nameInput.value = myPage.name;
 }

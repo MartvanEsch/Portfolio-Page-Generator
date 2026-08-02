@@ -53,21 +53,29 @@ export class Element {
   }
 
   toHTML(forPreview) {
+    let id = ""
+
+    if (forPreview) {
+      id = this.id
+      console.log(id)
+    }
+
     if (this.type === "Header") {
-      return `<h1>${this.text}</h1>`;
+      return `<h1 data-id="${id}">${this.text}</h1>`;
     }
     if (this.type === "Subheader") {
-      return `<h2>${this.text}</h2>`;
+      return `<h2 data-id="${id}">${this.text}</h2>`;
     }
     if (this.type === "Paragraph") {
-      return `<p>${this.text}</p>`;
+      return `<p data-id="${id}">${this.text}</p>`;
     }
     if (this.type === "Caption") {
-      return `<small>${this.text}</small>`;
+      return `<small data-id="${id}">${this.text}</small>`;
     }
+
     if (this.type === "Image") {
       if (forPreview) {
-        return `<img src="${URL.createObjectURL(this.path)}" alt="${this.alt}">`;
+        return `<img data-id="${id}" src="${URL.createObjectURL(this.path)}" alt="${this.alt}">`;
       } else {
         console.log("for export");
         console.log(this);
@@ -75,7 +83,7 @@ export class Element {
       }
     }
     if (this.type === "Video") {
-      return `<iframe src="${this.path}"></iframe>`;
+      return `<iframe data-id="${id}" src="${this.path}"></iframe>`;
     }
     return ""; // Fallback
   }

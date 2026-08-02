@@ -429,7 +429,7 @@ form > * {
 #images {
   display: flex;
   flex-direction: column;
-  gap: 5vw;
+  gap: var(--gap-small);
   overflow: hidden;
   align-items: center;
   justify-content: center;

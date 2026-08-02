@@ -142,3 +142,7 @@ button {
   display: flex;
   flex-direction: column;
 }
+
+.highlighted {
+  border: solid 2px whitesmoke;
+}

@@ -84,9 +84,9 @@ export class Page {
         let element = new Element(el.type, el, el.id, files);
 
         if (el.type === "Image" && files) {
-          await element.setImage(files)
+          await element.setImage(files);
         }
-        return element
+        return element;
       }),
     );
 
@@ -161,6 +161,7 @@ export class Page {
       href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,100..900;1,100..900&family=Funnel+Display:wght@300..800&display=swap"
       rel="stylesheet"
     />
+${forPreview ? '<script src="/js/ui/embedded.js" defer></script>' : ""}
     <link rel="stylesheet" href="${forPreview ? "project/styles.css" : "styles.css"}"/>
     <title>Mart van Esch - Portfolio</title>
     <meta
