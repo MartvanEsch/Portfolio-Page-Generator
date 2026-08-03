@@ -1,5 +1,5 @@
 // 1. Gebruik een class (bijv. .portfolio-image) voor meerdere elementen
-const images = document.querySelectorAll("#images > *")
+const images = document.querySelectorAll("#images > *");
 
 function sendSignal(e) {
   // 2. e.currentTarget pakt altijd het element waar de listener op zit
@@ -9,6 +9,7 @@ function sendSignal(e) {
   const data = {
     id: targetElement.dataset.id || "",
     src: targetElement.src || "",
+    signal: "element"
   };
 
   // Stuur alleen een schoon data-object
@@ -19,3 +20,4 @@ function sendSignal(e) {
 images.forEach((el) => {
   el.addEventListener("mouseover", (e) => sendSignal(e));
 });
+

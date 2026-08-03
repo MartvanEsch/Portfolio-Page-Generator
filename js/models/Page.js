@@ -128,9 +128,7 @@ export class Page {
   }
 
   exportPageHTML(forPreview) {
-    let elementsHTML = this.elements
-      .map((el) => el.toHTML(forPreview))
-      .join("\n");
+    let elementsHTML = this.elements.map((el) => el.toHTML(forPreview));
     console.log(elementsHTML);
 
     let html = `<!doctype html>
@@ -193,7 +191,7 @@ ${forPreview ? '<script src="/js/ui/embedded.js" defer></script>' : ""}
               </svg>
             </a>
           </div>
-          <div id="images">${elementsHTML}</div>
+          <div id="images"></div>
         </div>
       </section>
     </main>
@@ -201,6 +199,16 @@ ${forPreview ? '<script src="/js/ui/embedded.js" defer></script>' : ""}
 </html>
 `;
 
-    return html;
+    let parser = new DOMParser();
+    let doc = parser.parseFromString(html, "text/html");
+
+    elementsHTML.forEach((el) => {
+      doc.querySelector("#images").append(el);
+    });
+    console.log(elementsHTML)
+
+    console.log("Exporting page");
+    console.log(doc);
+    return doc;
   }
 }

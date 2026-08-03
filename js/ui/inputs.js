@@ -207,27 +207,21 @@ export function setupEventlisteners() {
   let highlighted;
   window.addEventListener("message", (event) => {
     const ontvangenData = event.data;
-
+    console.log("check deze data");
     console.log(ontvangenData);
-    console.log("Er is op een foto geklikt:", ontvangenData.titel);
+    if (ontvangenData.signal === "element") {
+      highlighted = event.data.id;
 
-    if (!event.data.id) {
-      return;
+      let layers = document.querySelectorAll("#layers ul > *");
+      layers.forEach((layer) => {
+        if (layer.dataset.id === highlighted) {
+          console.log(layer);
+          layer.classList.add("highlighted");
+        } else {
+          console.log("geen layer gevonden ?");
+          layer.classList.remove("highlighted");
+        }
+      });
     }
-    highlighted = event.data.id;
-
-    console.log(highlighted);
-    let layers = document.querySelectorAll("#layers ul > *");
-    layers.forEach((layer) => {
-      console.log(layer)
-      console.log(layer.dataset.id, highlighted)
-      if (layer.dataset.id === highlighted) {
-        console.log(layer)
-        layer.classList.add("highlighted");
-      } else {
-        console.log("geen layer gevonden ?")
-        layer.classList.remove("highlighted");
-      }
-    });
   });
 }

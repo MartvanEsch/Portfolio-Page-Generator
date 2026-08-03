@@ -3,8 +3,12 @@ import { myPage } from "../app.js";
 export function renderPreview() {
   let iframe = document.querySelectorAll("iframe");
 
+
+
   iframe.forEach((frame) => {
-    frame.srcdoc = myPage.exportPageHTML(true);
+    let html = myPage.exportPageHTML(true)
+    let string = "<!DOCTYPE html>\n" + html.documentElement.outerHTML
+    frame.srcdoc = string;
   });
 }
 

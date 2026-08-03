@@ -53,38 +53,54 @@ export class Element {
   }
 
   toHTML(forPreview) {
-    let id = ""
-
+    let id = "";
     if (forPreview) {
-      id = this.id
-      console.log(id)
+      id = this.id;
     }
 
     if (this.type === "Header") {
-      return `<h1 data-id="${id}">${this.text}</h1>`;
+      let el = document.createElement("h1");
+      el.dataset.id = id;
+      el.textContent = this.text;
+      return el;
     }
     if (this.type === "Subheader") {
-      return `<h2 data-id="${id}">${this.text}</h2>`;
+      let el = document.querySelector("h2");
+      el.dataset.id = id;
+      el.textContent = this.text;
+      return el;
     }
     if (this.type === "Paragraph") {
-      return `<p data-id="${id}">${this.text}</p>`;
+      let el = document.querySelector("p");
+      el.dataset.id = id;
+      el.textContent = this.text;
+      return el;
     }
     if (this.type === "Caption") {
-      return `<small data-id="${id}">${this.text}</small>`;
+      let el = document.querySelector("small");
+      el.dataset.id = id;
+      el.textContent = this.text;
+      return el;
     }
 
     if (this.type === "Image") {
+      let el = document.querySelector("img");
       if (forPreview) {
-        return `<img data-id="${id}" src="${URL.createObjectURL(this.path)}" alt="${this.alt}">`;
+        el.dataset.id = id;
+        el.alt = this.alt;
+        el.src = URL.createObjectURL(this.path);
+        return el;
       } else {
-        console.log("for export");
-        console.log(this);
-        return `<img src="images/${this.path.name}" alt="${this.alt}">`;
+        el.src = `images/${this.path.name}`
+        el.alt = this.alt
+        return el;
       }
     }
     if (this.type === "Video") {
-      return `<iframe data-id="${id}" src="${this.path}"></iframe>`;
+      let el = document.querySelector("iframe")
+      el.dataset.id = id
+      el.src = this.path
+      return el;
     }
-    return ""; // Fallback
   }
 }
