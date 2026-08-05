@@ -64,27 +64,23 @@ export class Element {
       el.textContent = this.text;
       return el;
     }
-    if (this.type === "Subheader") {
-      let el = document.querySelector("h2");
-      el.dataset.id = id;
-      el.textContent = this.text;
-      return el;
-    }
+
     if (this.type === "Paragraph") {
-      let el = document.querySelector("p");
+      let el = document.createElement("p");
       el.dataset.id = id;
       el.textContent = this.text;
       return el;
     }
+    
     if (this.type === "Caption") {
-      let el = document.querySelector("small");
+      let el = document.createElement("small");
       el.dataset.id = id;
       el.textContent = this.text;
       return el;
     }
 
     if (this.type === "Image") {
-      let el = document.querySelector("img");
+      let el = document.createElement("img");
       if (forPreview) {
         el.dataset.id = id;
         el.alt = this.alt;
@@ -96,6 +92,7 @@ export class Element {
         return el;
       }
     }
+
     if (this.type === "Video") {
       let el = document.querySelector("iframe")
       el.dataset.id = id

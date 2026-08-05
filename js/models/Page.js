@@ -57,25 +57,18 @@ export class Page {
       this[property] = value;
     }
 
-    updateObjPreview();
-    renderPreview();
-    updateLayers();
+    this.refresh();
   }
 
   addElement(type, contentObj) {
     const newElement = new Element(type, contentObj, this.elements.length + 1);
+    console.log(newElement)
     this.elements.push(newElement);
 
-    updateObjPreview();
-    renderPreview();
-    updateLayers();
+    this.refresh();
   }
 
   async loadNewPage(page, files) {
-    if (files) {
-      console.log("loading from import ", files);
-    }
-
     activePages.push(this);
     Object.assign(this, page);
 
@@ -90,11 +83,7 @@ export class Page {
       }),
     );
 
-    renderPreview();
-    updateObjPreview();
-    updateLayers();
-    updateTabs();
-    updateProperties();
+    this.refresh();
   }
 
   moveElementUp(index) {
@@ -102,8 +91,7 @@ export class Page {
     this.elements[index] = this.elements[index - 1];
     this.elements[index - 1] = temp;
 
-    this.updateObject();
-    updateLayers();
+    this.refresh();
   }
 
   moveElementDown(index) {
@@ -111,15 +99,15 @@ export class Page {
     this.elements[index] = this.elements[index + 1];
     this.elements[index + 1] = temp;
 
-    this.updateObject();
-    updateLayers();
+    this.refresh();
   }
 
   deleteElement(index) {
     this.elements.splice(index, 1);
     this.elements.forEach((el, idx) => (el.id = idx + 1));
     this.updateObject();
-    updateLayers();
+
+    this.refresh();
   }
 
   getImages() {
@@ -205,10 +193,14 @@ ${forPreview ? '<script src="/js/ui/embedded.js" defer></script>' : ""}
     elementsHTML.forEach((el) => {
       doc.querySelector("#images").append(el);
     });
-    console.log(elementsHTML)
-
-    console.log("Exporting page");
-    console.log(doc);
     return doc;
+  }
+
+  refresh() {
+    updateObjPreview();
+    renderPreview();
+    updateLayers();
+    updateProperties();
+    updateTabs();
   }
 }

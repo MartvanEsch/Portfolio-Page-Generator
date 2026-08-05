@@ -25,29 +25,13 @@ export function setupInputFields(elementValue) {
 
   const properties = document.querySelector("#properties");
   let propertiesInputs = properties.querySelectorAll("div > *");
-  console.log(propertiesInputs);
   const inputsNeeded = addInputsProperties[elementValue];
 
   propertiesInputs.forEach((el) => {
     let isImageButton = el.id === "imageButton";
     let matchesPlaceholder = inputsNeeded.includes(el.placeholder);
-    console.log(el.placeholder, inputsNeeded);
-    console.log(matchesPlaceholder);
-    console.log("---------------------------");
-
-    let showElement = false;
-
-    if (isImageButton) {
-      showElement = elementValue === "Image";
-    } else {
-      showElement = matchesPlaceholder;
-    }
-
-    if (!showElement) {
-      el.classList.add("hidden");
-    } else {
-      el.classList.remove("hidden");
-    }
+    let showElement = isImageButton ? elementValue === "Image" : matchesPlaceholder
+    el.classList.toggle("hidden", !showElement)
   });
 
   properties.classList.remove("hidden");
@@ -55,6 +39,7 @@ export function setupInputFields(elementValue) {
 
 export function setupEventlisteners() {
   let type = "";
+  let compressed;
 
   const settingInputs = document.querySelectorAll("[data-prop]");
   settingInputs.forEach((input) => {
@@ -143,85 +128,96 @@ export function setupEventlisteners() {
     zipInput.click();
   });
 
-  let compressed;
+  ///////////// ALL FUNCTIONS ABOVE NEED HELPER FUNCS
   const fileButton = document.querySelector("#imageButton");
   const fileInput = document.querySelector("#imageInput");
+  fileInput.addEventListener("change", async (e) => {
+    compressed = await handleCompression(e);
+  });
   fileButton.addEventListener("click", () => {
-    fileInput.addEventListener("change", (e) => {
-      addElInput.classList.add("hidden");
-      let file = e.target.files[0];
-      if (file) {
-        new Compressor(file, {
-          quality: 0.8,
-          maxWidth: 1400,
-          maxHeight: 1400,
-          checkOrientation: false,
-          strict: false,
-          convertSize: 0,
-          mimeType: "image/jpeg",
-
-          success(result) {
-            console.log("Oud:", (file.size / 1024).toFixed(1), "KB");
-            console.log("Nieuw:", (result.size / 1024).toFixed(1), "KB");
-
-            addElInput.classList.remove("hidden");
-            compressed = result;
-          },
-          error(err) {
-            console.error(err.message);
-          },
-        });
-      }
-    });
     fileInput.click();
   });
 
   let editButton = document.querySelector("#editBtn");
   let saveButton = document.querySelector("#saveBtn");
+  editButton.addEventListener("click", (e) => toggleJsonPreview(true, e));
+  saveButton.addEventListener("click", (e) => toggleJsonPreview(false, e));
+
+  window.addEventListener("message", (e) => handleMessage(e));
+}
+
+function handleMessage(event) {
+  if (!event.data) {
+    return;
+  }
+
+  const ontvangenData = event.data;
+  let receivedId = ontvangenData.id;
+  const layers = Array.from(document.querySelectorAll("#layers ul > *"));
+  const targetLayer = layers.find((layer) => layer.dataset.id === receivedId);
+
+  if (ontvangenData.signal === "delete") {
+    let index = myPage.elements.findIndex((el) => el.id === receivedId);
+    myPage.deleteElement(index);
+  }
+
+  if (ontvangenData.signal === "highlight") {
+    console.log("highlighted", targetLayer);
+  }
+}
+
+function toggleJsonPreview(isEditing, event) {
+  let editButton = document.querySelector("#editBtn");
+  let saveButton = document.querySelector("#saveBtn");
   let jsonOutput = document.querySelector("#json-output");
   let textArea = document.querySelector("#jsonTextArea");
 
-  editButton.addEventListener("click", (e) => {
-    e.target.classList.add("hidden");
-    saveButton.classList.remove("hidden");
+  editButton.classList.toggle("hidden", isEditing);
+  saveButton.classList.toggle("hidden", !isEditing);
+  jsonOutput.classList.toggle("hidden", isEditing);
+  textArea.classList.toggle("hidden", !isEditing);
 
-    jsonOutput.classList.add("hidden");
-    textArea.classList.remove("hidden");
+  event.target.classList.add("hidden");
+
+  if (isEditing) {
     textArea.innerHTML = jsonOutput.textContent;
-
     const aantalRegels = jsonOutput.textContent.split("\n").length;
     textArea.setAttribute("rows", aantalRegels);
     textArea.focus();
-  });
-
-  saveButton.addEventListener("click", (e) => {
-    e.target.classList.add("hidden");
-    editButton.classList.remove("hidden");
-
-    jsonOutput.classList.remove("hidden");
-    textArea.classList.add("hidden");
-
+  } else {
     myPage.loadNewPage(JSON.parse(textArea.value));
-  });
+  }
+}
 
-  let highlighted;
-  window.addEventListener("message", (event) => {
-    const ontvangenData = event.data;
-    console.log("check deze data");
-    console.log(ontvangenData);
-    if (ontvangenData.signal === "element") {
-      highlighted = event.data.id;
+function handleCompression(e) {
+  const addElInput = document.querySelector("#addElInput");
+  addElInput.classList.add("hidden");
 
-      let layers = document.querySelectorAll("#layers ul > *");
-      layers.forEach((layer) => {
-        if (layer.dataset.id === highlighted) {
-          console.log(layer);
-          layer.classList.add("highlighted");
-        } else {
-          console.log("geen layer gevonden ?");
-          layer.classList.remove("highlighted");
-        }
-      });
+  let file = e.target.files[0];
+
+  return new Promise((resolve, reject) => {
+    if (!file) {
+      resolve(null);
+      return;
     }
+
+    new Compressor(file, {
+      quality: 0.8,
+      maxWidth: 1400,
+      maxHeight: 1400,
+      checkOrientation: false,
+      strict: false,
+      convertSize: 0,
+      mimeType: "image/jpeg",
+
+      success(result) {
+        addElInput.classList.remove("hidden");
+        resolve(result);
+      },
+      error(err) {
+        console.error(err.message);
+        reject(err);
+      },
+    });
   });
 }

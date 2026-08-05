@@ -22,8 +22,6 @@ export function updateObjPreview() {
 }
 
 export function updateLayers() {
-  console.log(myPage);
-
   let layersDiv = document.querySelector("#layers ul");
 
   if (myPage.elements === 0) {
@@ -83,11 +81,9 @@ export function updateLayers() {
       layersDiv.append(li);
     });
   }
-  console.log(layersDiv);
 }
 
 export function updateProperties() {
-  console.log("setting name");
   let nameInput = document.querySelector("#nameInput");
   nameInput.value = myPage.name;
 }
