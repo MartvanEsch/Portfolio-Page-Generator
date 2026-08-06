@@ -30,8 +30,10 @@ export function setupInputFields(elementValue) {
   propertiesInputs.forEach((el) => {
     let isImageButton = el.id === "imageButton";
     let matchesPlaceholder = inputsNeeded.includes(el.placeholder);
-    let showElement = isImageButton ? elementValue === "Image" : matchesPlaceholder
-    el.classList.toggle("hidden", !showElement)
+    let showElement = isImageButton
+      ? elementValue === "Image"
+      : matchesPlaceholder;
+    el.classList.toggle("hidden", !showElement);
   });
 
   properties.classList.remove("hidden");
@@ -43,98 +45,37 @@ export function setupEventlisteners() {
 
   const settingInputs = document.querySelectorAll("[data-prop]");
   settingInputs.forEach((input) => {
-    input.addEventListener("input", (e) => {
-      let property = e.target.dataset.prop;
-      let value =
-        e.target.type === "checkbox" ? e.target.checked : e.target.value;
-      myPage.updateObject(property, value);
-    });
+    input.addEventListener("input", (e) => handleSettingChange(e));
   });
 
   const selectElementInputs = document.querySelectorAll(".addInput");
   selectElementInputs.forEach((input) => {
     input.addEventListener("click", (e) => {
-      let value = e.target.value;
-      type = value;
-      setupInputFields(value);
-      addElInput.classList.remove("hidden");
+      type = handleSelectElement(e);
     });
   });
 
-  const properties = document.querySelector("#properties");
   const addElInput = document.querySelector("#addElInput");
-  addElInput.addEventListener("click", () => {
-    const propertiesInputs = Array.from(
-      properties.querySelectorAll(`input[type="text"]`),
-    );
-    let contentObj = {};
-
-    propertiesInputs
-      .filter((el) => !el.classList.contains("hidden"))
-      .forEach((el) => {
-        const key = el.placeholder.toLowerCase();
-        contentObj[key] = el.value;
-      });
-
-    if (compressed) {
-      contentObj.path = compressed;
-      compressed = "";
-    }
-    myPage.addElement(type, contentObj);
-  });
+  addElInput.addEventListener("click", () =>
+    handleAddElement(compressed, type),
+  );
 
   const exportPageButton = document.querySelector("#exportPageBtn");
-  exportPageButton.addEventListener("click", async function () {
-    let html = myPage.exportPageHTML(false);
-    let zip = new JSZip();
-
-    zip.file("index.html", html);
-    zip.file("styles.css", cssContent);
-    zip.file("script.js", jsContent);
-    zip.file("data.json", JSON.stringify(myPage));
-
-    myPage.getImages().forEach((image) => {
-      zip.file(`images/${image.path.name}`, image.path);
-    });
-
-    zip.generateAsync({ type: "blob" }).then(function (content) {
-      saveAs(content, "page.zip");
-    });
-  });
+  exportPageButton.addEventListener("click", () => handleExport());
 
   const importPageButton = document.querySelector("#importPageBtn");
   const zipInput = document.querySelector("#zipInput");
-
   importPageButton.addEventListener("click", () => {
-    zipInput.addEventListener("change", async (e) => {
-      let file = e.target.files[0];
-
-      try {
-        const zip = await JSZip.loadAsync(file);
-        const jsonFile = zip.file("data.json");
-
-        if (jsonFile) {
-          const jsonContent = await jsonFile.async("string");
-          console.log(jsonContent);
-          const pageData = JSON.parse(jsonContent);
-          console.log("Ingeladen project data:", pageData);
-
-          await myPage.loadNewPage(pageData, zip);
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    });
+    zipInput.addEventListener("change", async (e) => await handleImport(e));
     zipInput.click();
   });
 
-  ///////////// ALL FUNCTIONS ABOVE NEED HELPER FUNCS
   const fileButton = document.querySelector("#imageButton");
   const fileInput = document.querySelector("#imageInput");
-  fileInput.addEventListener("change", async (e) => {
-    compressed = await handleCompression(e);
-  });
   fileButton.addEventListener("click", () => {
+    fileInput.addEventListener("change", async (e) => {
+      compressed = await handleCompression(e);
+    });
     fileInput.click();
   });
 
@@ -153,8 +94,6 @@ function handleMessage(event) {
 
   const ontvangenData = event.data;
   let receivedId = ontvangenData.id;
-  const layers = Array.from(document.querySelectorAll("#layers ul > *"));
-  const targetLayer = layers.find((layer) => layer.dataset.id === receivedId);
 
   if (ontvangenData.signal === "delete") {
     let index = myPage.elements.findIndex((el) => el.id === receivedId);
@@ -162,7 +101,16 @@ function handleMessage(event) {
   }
 
   if (ontvangenData.signal === "highlight") {
-    console.log("highlighted", targetLayer);
+    const layers = Array.from(document.querySelectorAll("#layers ul > *"));
+    const targetLayer = layers.find((layer) => layer.dataset.id == receivedId);
+
+    layers.forEach((layer) => layer.classList.remove("highlighted"));
+
+    if (targetLayer) {
+      targetLayer.classList.add("highlighted");
+    } else {
+      console.log("Layer not found");
+    }
   }
 }
 
@@ -220,4 +168,73 @@ function handleCompression(e) {
       },
     });
   });
+}
+
+async function handleExport() {
+  let html = myPage.exportPageHTML(false);
+  let zip = new JSZip();
+
+  zip.file("index.html", html);
+  zip.file("styles.css", cssContent);
+  zip.file("script.js", jsContent);
+  zip.file("data.json", JSON.stringify(myPage));
+
+  myPage.getImages().forEach((image) => {
+    zip.file(`images/${image.path.name}`, image.path);
+  });
+
+  zip.generateAsync({ type: "blob" }).then(function (content) {
+    saveAs(content, "page.zip");
+  });
+}
+
+async function handleImport(e) {
+  let file = e.target.files[0];
+
+  try {
+    const zip = await JSZip.loadAsync(file);
+    const jsonFile = zip.file("data.json");
+
+    if (jsonFile) {
+      const jsonContent = await jsonFile.async("string");
+      const pageData = JSON.parse(jsonContent);
+      await myPage.loadNewPage(pageData, zip);
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+function handleAddElement(compressedFile, inputType) {
+  const propertiesInputs = Array.from(
+    properties.querySelectorAll(`#properties input[type="text"]`),
+  );
+  let contentObj = {};
+
+  propertiesInputs
+    .filter((el) => !el.classList.contains("hidden"))
+    .forEach((el) => {
+      const key = el.placeholder.toLowerCase();
+      contentObj[key] = el.value;
+    });
+
+  if (compressedFile) {
+    contentObj.path = compressedFile;
+  }
+
+  myPage.addElement(inputType, contentObj);
+}
+
+function handleSelectElement(e) {
+  let type = e.target.value;
+  setupInputFields(type);
+  addElInput.classList.remove("hidden");
+
+  return type;
+}
+
+function handleSettingChange(e) {
+  let property = e.target.dataset.prop;
+  let value = e.target.type === "checkbox" ? e.target.checked : e.target.value;
+  myPage.updateObject(property, value);
 }
