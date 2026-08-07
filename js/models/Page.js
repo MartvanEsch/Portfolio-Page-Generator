@@ -62,7 +62,7 @@ export class Page {
 
   addElement(type, contentObj) {
     const newElement = new Element(type, contentObj, this.elements.length + 1);
-    console.log(newElement)
+    console.log(newElement);
     this.elements.push(newElement);
 
     this.refresh();
@@ -87,6 +87,10 @@ export class Page {
   }
 
   moveElementUp(index) {
+    if (!this.elements[index - 1]) {
+      return;
+    }
+
     let temp = this.elements[index];
     this.elements[index] = this.elements[index - 1];
     this.elements[index - 1] = temp;
@@ -95,6 +99,10 @@ export class Page {
   }
 
   moveElementDown(index) {
+    if (!this.elements[index + 1]) {
+      return;
+    }
+
     let temp = this.elements[index];
     this.elements[index] = this.elements[index + 1];
     this.elements[index + 1] = temp;
@@ -103,6 +111,8 @@ export class Page {
   }
 
   deleteElement(index) {
+    console.log("Deleting element with index: ", index);
+
     this.elements.splice(index, 1);
     this.elements.forEach((el, idx) => (el.id = idx + 1));
     this.updateObject();
@@ -116,15 +126,18 @@ export class Page {
   }
 
   exportPageHTML(forPreview) {
-    let elementsHTML = this.elements.map((el) => el.toHTML(forPreview));
-    console.log(elementsHTML);
+    // 1. Genereer eerst de HTML-string voor alle elementen in de array
+    const elementsHTML = this.elements
+      .map((el) => el.toHTML(forPreview))
+      .join(""); // Plak alle element-strings aan elkaar
 
+    // 2. Stop die string direct op de juiste plek (#images) in het template
     let html = `<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>Mart van Esch - Portfolio</title>
     <link
       href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
       rel="stylesheet"
@@ -149,7 +162,6 @@ export class Page {
     />
 ${forPreview ? '<script src="/js/ui/embedded.js" defer></script>' : ""}
     <link rel="stylesheet" href="${forPreview ? "project/styles.css" : "styles.css"}"/>
-    <title>Mart van Esch - Portfolio</title>
     <meta
       name="description"
       content="Projectpagina voor het portfolio van Mart van Esch, een student Communicatie en Multimedia Design die websites, branding, fotografie, animaties en installaties ontwerpt en maakt."
@@ -179,21 +191,17 @@ ${forPreview ? '<script src="/js/ui/embedded.js" defer></script>' : ""}
               </svg>
             </a>
           </div>
-          <div id="images"></div>
+          <div id="images">
+            ${elementsHTML}
+          </div>
         </div>
       </section>
     </main>
   </body>
-</html>
-`;
+</html>`;
 
-    let parser = new DOMParser();
-    let doc = parser.parseFromString(html, "text/html");
-
-    elementsHTML.forEach((el) => {
-      doc.querySelector("#images").append(el);
-    });
-    return doc;
+    // 3. Geef de complete HTML-string terug
+    return html;
   }
 
   refresh() {

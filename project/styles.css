@@ -484,6 +484,9 @@ form > * {
 .icon {
   fill: var(--md-sys-color-on-primary-container);
 }
+.highlighted {
+  border: 4px white solid !important;
+}
 /* Media */
 @media (max-width: 700px) {
   /* General styles */

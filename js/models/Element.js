@@ -53,51 +53,47 @@ export class Element {
   }
 
   toHTML(forPreview) {
-    let id = "";
-    if (forPreview) {
-      id = this.id;
-    }
-
+    let el;
     if (this.type === "Header") {
-      let el = document.createElement("h1");
-      el.dataset.id = id;
+      el = document.createElement("h1");
       el.textContent = this.text;
-      return el;
     }
 
     if (this.type === "Paragraph") {
-      let el = document.createElement("p");
-      el.dataset.id = id;
+      el = document.createElement("p");
       el.textContent = this.text;
-      return el;
     }
-    
+
     if (this.type === "Caption") {
-      let el = document.createElement("small");
-      el.dataset.id = id;
+      el = document.createElement("small");
       el.textContent = this.text;
-      return el;
     }
 
     if (this.type === "Image") {
-      let el = document.createElement("img");
+      el = document.createElement("img");
       if (forPreview) {
-        el.dataset.id = id;
         el.alt = this.alt;
         el.src = URL.createObjectURL(this.path);
-        return el;
       } else {
-        el.src = `images/${this.path.name}`
-        el.alt = this.alt
-        return el;
+        el.src = `images/${this.path.name}`;
+        el.alt = this.alt;
       }
     }
 
     if (this.type === "Video") {
-      let el = document.querySelector("iframe")
-      el.dataset.id = id
-      el.src = this.path
-      return el;
+      el = document.querySelector("iframe");
+      el.dataset.id = id;
+      el.src = this.path;
     }
+
+    if (forPreview) {
+      el.dataset.id = this.id;
+    }
+
+    if (this.selected) {
+      el.classList.add("highlighted")
+    }
+
+    return el.outerHTML;
   }
 }

@@ -13,8 +13,21 @@ function sendSignal(e, signal) {
   window.parent.postMessage(data, "*");
 }
 
-
 images.forEach((el) => {
-  el.addEventListener("mouseover", (e) => sendSignal(e, "highlight"));
-  el.addEventListener("click", (e) => sendSignal(e, "delete"));
+  el.addEventListener("click", (e) => sendSignal(e, "select"));
 });
+
+
+document.addEventListener("click", (e) => {
+  const targetElement = e.target.closest("[data-id]");
+  if (!targetElement) return;
+
+  const data = {
+    id: Number(targetElement.dataset.id) || targetElement.dataset.id,
+    src: targetElement.src || "",
+    signal: "select",
+  };
+
+  window.parent.postMessage(data, "*");
+});
+

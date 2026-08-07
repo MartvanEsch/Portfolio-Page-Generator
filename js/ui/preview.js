@@ -2,13 +2,10 @@ import { myPage } from "../app.js";
 
 export function renderPreview() {
   let iframe = document.querySelectorAll("iframe");
-
-
+  let html = myPage.exportPageHTML(true);
 
   iframe.forEach((frame) => {
-    let html = myPage.exportPageHTML(true)
-    let string = "<!DOCTYPE html>\n" + html.documentElement.outerHTML
-    frame.srcdoc = string;
+    frame.srcdoc = html;
   });
 }
 
@@ -36,13 +33,13 @@ export function updateLayers() {
 
     myPage.elements.forEach((el, index) => {
       let li = document.createElement("li");
-      li.dataset.id = el.id
+      li.dataset.id = el.id;
 
       let p = document.createElement("p");
       if (el.text) {
         p.textContent = el.text;
       } else {
-        p.textContent = "Laag " + el.id
+        p.textContent = "Laag " + el.id;
       }
 
       let img = document.createElement("img");

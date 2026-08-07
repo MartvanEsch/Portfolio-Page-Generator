@@ -12,6 +12,8 @@ import JSZip from "jszip";
 import { saveAs } from "file-saver";
 import Compressor from "compressorjs";
 
+let currentKeyHandler = null;
+
 export function setupInputFields(elementValue) {
   const addInputsProperties = {
     Header: ["Text"],
@@ -87,6 +89,7 @@ export function setupEventlisteners() {
   window.addEventListener("message", (e) => handleMessage(e));
 }
 
+let controlsHandler = null;
 function handleMessage(event) {
   if (!event.data) {
     return;
@@ -95,23 +98,51 @@ function handleMessage(event) {
   const ontvangenData = event.data;
   let receivedId = ontvangenData.id;
 
-  if (ontvangenData.signal === "delete") {
-    let index = myPage.elements.findIndex((el) => el.id === receivedId);
-    myPage.deleteElement(index);
+  if (ontvangenData.signal === "select") {
+    let selected = myPage.elements.findIndex((el) => el.id === receivedId);
+    myPage.elements.map((el) => (el.selected = false));
+    myPage.elements[selected].selected = true;
+    myPage.refresh();
+    window.focus()
+    setupControls();
+  }
+}
+
+function setupControls() {
+  if (controlsHandler) {
+    document.removeEventListener("keydown", controlsHandler);
   }
 
-  if (ontvangenData.signal === "highlight") {
-    const layers = Array.from(document.querySelectorAll("#layers ul > *"));
-    const targetLayer = layers.find((layer) => layer.dataset.id == receivedId);
+  controlsHandler = (e) => {
+    let index = myPage.elements.findIndex((el) => el.selected);
 
-    layers.forEach((layer) => layer.classList.remove("highlighted"));
+    if (index === -1) return;
 
-    if (targetLayer) {
-      targetLayer.classList.add("highlighted");
-    } else {
-      console.log("Layer not found");
+    if (e.key === "Backspace") {
+      myPage.deleteElement(index);
+
+      let nextEl = myPage.elements[index]
+      if (nextEl) {
+        myPage.elements[index].selected = true
+        myPage.refresh()
+        return
+      }
+
+      document.removeEventListener("keydown", controlsHandler);
+      controlsHandler = null;
+      return;
     }
-  }
+
+    if (e.key === "w" || e.key === "W") {
+      myPage.moveElementUp(index); // moveElementUp refreshed de pagina al
+    }
+
+    if (e.key === "s" || e.key === "S") {
+      myPage.moveElementDown(index); // moveElementDown refreshed de pagina al
+    }
+  };
+
+  document.addEventListener("keydown", controlsHandler);
 }
 
 function toggleJsonPreview(isEditing, event) {
@@ -172,6 +203,7 @@ function handleCompression(e) {
 
 async function handleExport() {
   let html = myPage.exportPageHTML(false);
+  console.log(html)
   let zip = new JSZip();
 
   zip.file("index.html", html);
